@@ -12,7 +12,7 @@ El caso de estudio representa el **sistema cardiovascular** mediante un circuito
 **Institución:** Tecnológico Nacional de México / Instituto Tecnológico de Tijuana  
 **Asignatura:** Modelado de Sistemas Fisiológicos  
 **Programa:** Ingeniería Biomédica  
-**Estudiante:** Nombre completo · Número de control · correo@tijuana.tecnm.mx
+**Estudiante:** Kenia Yasdit Contreras · 23212188 · l23212188@tijuana.tecnm.mx
 
 **Repositorio de la asignatura:** https://github.com/DrPaulValle/MSF-IBF1020  
 **Sede:** Blvd. Alberto Limón Padilla s/n, Tijuana, C. P. 22454, B. C., México.
