@@ -214,8 +214,6 @@ Incluir matrices A, B, C, D, funciones de transferencia, polos, error, ganancias
 
 ## 19. Conclusiones
 
-## 19. Conclusiones
-
 > **Conclusión de la estudiante:**
 > Kenia Yasdit Contreras Jiménez - 23212188
 
