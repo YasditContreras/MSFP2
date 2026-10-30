@@ -242,15 +242,6 @@ Como limitación, el modelo no considera propagación de onda ni regulación aut
 
 **Nota:** Simulación con fines académicos, no es recomendación clínica.
 
-## 20. Estructura del repositorio
-.
-├── README.md
-├── matlab/
-├── simulink/
-├── python/
-├── figuras/
-└── resultados/
-
 ## 24. Referencias
 1. M. C. Khoo, Physiological Control Systems, 2nd ed.
 2. F. C. Hoppensteadt and C. S. Peskin, Modeling and Simulation in Medicine and the Life Sciences
