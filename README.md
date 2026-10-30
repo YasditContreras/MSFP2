@@ -198,12 +198,14 @@ Implementar $G_{hipo}(s)$, $G_{normo}(s)$, $G_{hiper}(s)$ con las mismas condici
 ## 16. Verificación cruzada
 
 | Modelo | Hipotenso | Normotenso | Hipertenso |
-|---|---|---|---|
-| Ecuaciones de estado | [ ] | [ ] | [ ] |
-| Función de transferencia | [ ] | [ ] | [ ] |
-| Simscape Electrical | [ ] | [ ] | [ ] |
-| MATLAB | [ ] | [ ] | [ ] |
-| Python | [ ] | [ ] | [ ] |
+|---|:---:|:---:|:---:|
+| Ecuaciones de estado | ✓ | ✓ | ✓ |
+| Función de transferencia | ✓ | ✓ | ✓ |
+| Simscape Electrical | ✓ | ✓ | ✓ |
+| MATLAB (Live Script) | ✓ | ✓ | ✓ |
+| Python | ✓ | ✓ | ✓ |
+
+✓ = Respuesta coincidente / Verificado
 
 ## 17. Diagrama biológico
 
