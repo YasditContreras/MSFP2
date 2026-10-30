@@ -181,10 +181,10 @@ $$ K_{P,hiper} = 129.978567122813 $$
 $$ K_{I,hiper} = 312762.858715908 $$
 $$ K_{D,hiper} = 0.00174611348908487 $$
 
-| Controlador | Kp | Ki | Kd | N | Observaciones |
-|---|---:|---:|---:|---:|---|
-| Hipotenso | 458.1841 | 1110647.2760 | 0.006267 | 50025.0214 | Ki alto por C=3.5, polos complejos -14.429±8.805j, respuesta oscilatoria |
-| Hipertenso | 129.9785 | 312762.8587 | 0.001746 | 49610.1326 | Ki menor por C=1.0, polos críticos -10.000, sistema más rígido |
+| Controlador | Kp | Ki | Kd | Observaciones |
+|---|---:|---:|---:|---|
+| Hipotenso | 458.1841 | 1110647.2760 | 0.006267 | Ki alto por C=3.5, polos complejos -14.429±8.805j, respuesta oscilatoria |
+| Hipertenso | 129.9785 | 312762.8587 | 0.001746 | Ki menor por C=1.0, polos críticos -10.000, sistema más rígido |
 Ambos controladores usan estructura PID con filtro: $C_{PID}(s)=K_P + \frac{K_I}{s} + \frac{K_D N s}{s+N}$
 
 ## 14. Análisis en lazo cerrado
