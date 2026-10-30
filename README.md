@@ -11,7 +11,7 @@ Esta práctica estudia el **modelo Windkessel de cuatro elementos** para represe
 
 **Docente:** Dr. Paul Antonio Valle Trujillo  
 **Institución:** Tecnológico Nacional de México / Instituto Tecnológico de Tijuana  
-**Estudiante:** Kenia Yasdit Contreras Jiménez · 23212188
+**Estudiante:** Kenia Yasdit Contreras Jiménez · 23212188 · l23212188@tectijuana.edu.mx
 
 ## Contenido
 1. Resumen
