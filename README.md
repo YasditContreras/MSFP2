@@ -1,219 +1,373 @@
-[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=YasditContreras/MSFP2)
-# Práctica 2 — Modelado y control del sistema cardiovascular mediante el modelo Windkessel
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=PradoIT/MSFP2)
 
-Repositorio académico de la asignatura **Modelado de Sistemas Fisiológicos**, correspondiente al programa de **Ingeniería Biomédica** del Tecnológico Nacional de México / Instituto Tecnológico de Tijuana.
+# Práctica 2 — Sistema Cardiovascular
 
-Esta práctica estudia el **modelo Windkessel de cuatro elementos** para representar la dinámica del sistema cardiovascular. Se comparan tres condiciones simuladas —**hipotensa, normotensa e hipertensa**— y se diseñan estrategias de control *in silico* para reducir la diferencia entre los casos hipotenso/hipertenso y la respuesta de referencia normotensa.
+Repositorio académico de la asignatura **Modelado de Sistemas Fisiológicos**, correspondiente al programa de **Ingeniería Biomédica** del Tecnológico Nacional de México / Instituto Tecnológico de Tijuana. Esta práctica integra modelado matemático, analogías eléctricas de sistemas fisiológicos, análisis temporal y de estabilidad en diferentes condiciones hemodinámicas, diseño de controladores PID, simulación computacional y comprobación experimental.
 
-> **Importante:** las estrategias de control desarrolladas en esta práctica tienen fines exclusivamente académicos y de simulación.
-
-## Datos de la práctica
+El caso de estudio representa el **sistema cardiovascular** mediante un circuito **RLC de segundo orden**. Se busca reproducir y comparar la respuesta de la presión principal/periférica $P_p(t)$ ante diferentes señales de presión arterial aplicada $P_a(t)$, evaluando tres condiciones fisiológicas (Hipotenso, Normotenso e Hipertenso), tanto en lazo abierto como en lazo cerrado con un controlador PID.
 
 **Docente:** Dr. Paul Antonio Valle Trujillo  
+**Correo:** paul.valle@tectijuana.edu.mx  
+**Departamento:** Ingeniería Eléctrica y Electrónica  
 **Institución:** Tecnológico Nacional de México / Instituto Tecnológico de Tijuana  
-**Estudiante:** Kenia Yasdit Contreras Jiménez · 23212188 · l23212188@tectijuana.edu.mx
+**Asignatura:** Modelado de Sistemas Fisiológicos  
+**Programa:** Ingeniería Biomédica  
+**Estudiante:** Prado Acosta Briseida · l23210715 · l23210715@tijuana.tecnm.mx
 
-## Contenido
-1. Resumen
-2. Competencia y objetivos
-3. Introducción al modelo Windkessel
-4. Variables y analogía eléctrica
-5. Parámetros de los tres casos
-6. Modelo mediante ecuaciones diferenciales
-7. Funciones de transferencia
-8. Error y estabilidad
+**Repositorio de la asignatura:** https://github.com/DrPaulValle/MSF-IBF1020  
+**Sede:** Blvd. Alberto Limón Padilla s/n, Tijuana, C. P. 22454, B. C., México.
 
 ---
 
-## 1. Resumen
-El objetivo es **modelar, analizar y controlar el comportamiento dinámico del sistema cardiovascular** utilizando el modelo Windkessel de cuatro elementos: **Z, C, R, L**.
+<a id="contenido"></a>
+## Contenido
 
-## 4. Variables y analogía eléctrica
+1. [Resumen](#resumen)
+2. [Competencia y objetivos](#objetivos)
+3. [Relación con el temario](#temario)
+4. [Modelo físico y analogía eléctrica](#analogia)
+5. [Formulación matemática](#modelo)
+6. [Análisis temporal y de estabilidad](#analisis)
+7. [Señales de entrada y condiciones de simulación](#senales)
+8. [Implementación en MATLAB, Simulink y Simscape](#matlab)
+9. [Control en lazo cerrado y sintonización PID](#pid)
+10. [Reproducción en Python](#python)
+11. [Controlador analógico y laboratorio](#laboratorio)
+12. [Resultados y verificación cruzada](#resultados)
+13. [Flujo de trabajo](#flujo)
+14. [Actividades del estudiante](#actividades)
+15. [Estructura del repositorio](#estructura)
+16. [Requisitos](#requisitos)
+17. [Reproducibilidad y entregables](#reproducibilidad)
+18. [Referencias](#referencias)
 
-Las variables de estado seleccionadas son:
+---
 
-$$ x_1(t) = F_L(t) $$
+<a id="resumen"></a>
+## Resumen
 
-$$ x_2(t) = P_p(t) $$
+La práctica tiene como propósito **reproducir un procedimiento completo de modelado, análisis, simulación y control** del sistema cardiovascular utilizando resultados y materiales de referencia. La dinámica hemodinámica del sistema se aproxima mediante una resistencia arterial $R$, una inductancia $L$, una capacitancia $C$ (compliancia vascular) y una impedancia de carga $Z$, representadas por un circuito eléctrico de segundo orden. A partir de las leyes de Kirchhoff se obtiene un modelo integro-diferencial, su función de transferencia y su correspondiente representación en el dominio del tiempo.
 
-$$ u(t) = P_a(t) $$
+Se estudian el error en estado estacionario y la estabilidad del modelo evaluando sus polos en tres estados fisiológicos característicos: **Hipotenso**, **Normotenso** e **Hipertenso**. Posteriormente se aplican cuatro entradas de referencia —escalón, pulso, rampa y senoide— y se contrastan tres implementaciones en MATLAB/Simulink/Simscape. Se incorpora un **controlador PID con retroalimentación negativa**, cuyas ganancias se sintonizan a partir de criterios de desempeño temporal. Los resultados se reproducen mediante Python y se comparan con la construcción física del circuito y las mediciones experimentales de laboratorio.
 
-$$ y(t) = P_p(t) $$
+**Palabras clave:** circuito RLC; controlador PID; sistema cardiovascular; hemodinámica; presión arterial; estabilidad; MATLAB; Simulink; Simscape Electrical; Python; simulación *in silico*.
 
-### Relaciones constitutivas
+[Volver al contenido](#contenido)
 
-$$ P_a(t) - P_p(t) = L \frac{dF_L(t)}{dt} $$
+---
 
-$$ F_Z(t) = \frac{P_a(t) - P_p(t)}{Z} $$
+<a id="objetivos"></a>
+## Competencia y objetivos
 
-$$ F_R(t) = \frac{P_p(t)}{R} $$
+### Competencia a desarrollar
 
-$$ F_C(t) = C \frac{dP_p(t)}{dt} $$
+Comprender los conceptos de Ingeniería de Control, la respuesta temporal y los criterios de estabilidad hemodinámica mediante la reproducción y verificación de un modelo matemático de segundo orden aplicado al sistema cardiovascular. La práctica permite evaluar el comportamiento fisiológico en estados de hipotensión, normotensión e hipertensión mediante herramientas computacionales e instrumentación de laboratorio.
 
-$$ F_Z(t) + F_L(t) = F_R(t) + F_C(t) $$
+### Objetivo general
 
-## 5. Parámetros de los tres casos
+Reproducir y verificar el modelo de segundo orden del sistema cardiovascular mediante su formulación matemática, implementación computacional, análisis de estabilidad en tres casos hemodinámicos, control con retroalimentación PID y emulación experimental.
 
-| Parámetro | Hipotenso | Normotenso | Hipertenso |
-|---|---:|---:|---:|
-| `Z` | 0.010 | 0.010 | 0.010 |
-| `L` | 0.001 | 0.001 | 0.001 |
-| `R` | 1.000 | 1.000 | 1.000 |
-| `C` | 3.500 | 1.500 | 1.000 |
+### Objetivos específicos
 
-## 6. Modelo mediante ecuaciones diferenciales
+- Obtener la función de transferencia del sistema $G(s) = P_p(s)/P_a(s)$ a partir de las leyes de Kirchhoff.
+- Formular el modelo de ecuaciones integro-diferenciales del circuito analógico.
+- Determinar el error en estado estacionario $e(t)$ ante una entrada de presión en escalón unitario.
+- Analizar la estabilidad en lazo abierto mediante el cálculo de polos para los estados: **Hipotenso** (subamortiguado), **Normotenso** (sobreamortiguado) e **Hipertenso** (críticamente amortiguado).
+- Simular la respuesta del sistema en lazo abierto y lazo cerrado mediante Simulink, Simscape y Python.
+- Sintonizar las ganancias de un controlador PID en MATLAB/Simulink para eliminar el error entre la presión deseada y la salida.
+- Construir el circuito equivalente y el controlador analógico en el laboratorio para validación física.
 
-$$ \dot{F}_L(t) = \frac{1}{L}P_a(t) - \frac{1}{L}P_p(t) $$
+[Volver al contenido](#contenido)
 
-$$ \dot{P}_p(t) = \frac{1}{ZC}P_a(t) + \frac{1}{C}F_L(t) - \left(\frac{1}{ZC} + \frac{1}{RC}\right)P_p(t) $$
+---
 
-$$ x(t) = \begin{bmatrix} F_L(t) \\ P_p(t) \end{bmatrix} $$
+<a id="temario"></a>
+## Relación con el temario
 
-$$ \dot{x}(t) = A x(t) + B u(t) $$
+La práctica integra contenidos correspondientes a tres unidades de la asignatura **Modelado de Sistemas Fisiológicos (IBF-1020)**:
 
-$$ A = \begin{bmatrix} 0 & -\frac{1}{L} \\ \frac{1}{C} & -\left(\frac{1}{ZC} + \frac{1}{RC}\right) \end{bmatrix} $$
+| Unidad | Área | Contenidos aplicados |
+|---|---|---|
+| I | Sistemas de control retroalimentados | Elementos del sistema de control, diagramas de bloques, respuesta ante distintas entradas, análisis de error y criterios de estabilidad |
+| II | Modelado matemático | Analogía circuito–sistema cardiovascular, leyes de Kirchhoff, modelo de segundo orden y función de transferencia |
+| III | Controladores | Tipos de controladores, diseño del PID y sintonización de ganancias |
 
-$$ B = \begin{bmatrix} \frac{1}{L} \\ \frac{1}{ZC} \end{bmatrix} $$
+[Volver al contenido](#contenido)
 
-$$ y(t) = C x(t) $$
+---
 
-$$ C = \begin{bmatrix} 0 & 1 \end{bmatrix}, \quad D = 0 $$
+<a id="analogia"></a>
+## Modelo físico y analogía eléctrica
 
-## 7. Funciones de transferencia
+El sistema cardiovascular se aproxima mediante un circuito eléctrico equivalente donde las presiones hidrostáticas/arteriales se representan por voltajes y el flujo sanguíneo por corriente.
 
-### 7.1 Desarrollo algebraico
+| Símbolo | Equivalente eléctrico | Interpretación fisiológica |
+|---|---|---|
+| $P_a(t)$ | Voltaje de entrada | Presión arterial de entrada / aplicativa |
+| $P_p(t)$ | Voltaje de salida | Presión principal / vascular periférica |
+| $F(t)$ | Corriente eléctrica | Flujo sanguíneo |
+| $R$ | Resistencia | Resistencia vascular periférica |
+| $L$ | Inductancia | Inercia del flujo sanguíneo / inductancia vascular |
+| $C$ | Capacitancia | Compliancia / elasticidad de los vasos sanguíneos |
+| $Z$ | Impedancia | Impedancia vascular de carga |
 
-Partiendo de:
+### Parámetros para los estados hemodinámicos
 
-$$ F_Z(t) + F_L(t) = F_C(t) + F_R(t) $$
+| Estado Fisiológico | $Z$ | $L$ | $R$ | $C$ | Respuesta del sistema |
+|---|---:|---:|---:|---:|---|
+| **Hipotenso** | $0.010$ | $0.007$ | $1.000$ | $3.500$ | Estable y Subamortiguado |
+| **Normotenso** | $0.010$ | $0.001$ | $1.006$ | $1.500$ | Estable y Sobreamortiguado |
+| **Hipertenso** | $0.010$ | $0.007$ | $1.000$ | $1.000$ | Estable y Críticamente amortiguado |
 
-con:
+[Volver al contenido](#contenido)
 
-$$ F_Z(t) = \frac{P_a(t) - P_p(t)}{Z} $$
+---
 
-$$ F_L(t) = \frac{1}{L} \int [P_a(t) - P_p(t)] \, dt $$
+<a id="modelo"></a>
+## Formulación matemática
 
-$$ F_C(t) = C \frac{dP_p(t)}{dt} $$
+### 1. Ecuaciones integro-diferenciales
 
-$$ F_R(t) = \frac{P_p(t)}{R} $$
+A partir del análisis de mallas y nodos del sistema equivalente, la corriente/flujo total está definido por las contribuciones de la inductancia, capacitancia y resistencia:
 
-se obtiene:
+$$F_a(t) = F_Z(t) + F_L(t) = F_C(t) + F_R(t)$$
 
-$$ \frac{P_a(t) - P_p(t)}{Z} + \frac{1}{L} \int [P_a(t) - P_p(t)] dt = C \frac{dP_p(t)}{dt} + \frac{P_p(t)}{R} $$
+Expresando las relaciones integro-diferenciales en función de la presión de entrada $P_a(t)$ y la presión de salida $P_p(t)$:
 
-Laplace con condiciones iniciales nulas:
+$$P_p(t) = \left[ \frac{1}{L} \int \left( P_a(t) - P_p(t) \right) dt - C \frac{dP_p(t)}{dt} \right] \frac{RZ}{Z+R}$$
 
-$$ \frac{P_a(s) - P_p(s)}{Z} + \frac{P_a(s) - P_p(s)}{Ls} = C s P_p(s) + \frac{P_p(s)}{R} $$
+### 2. Función de transferencia
 
-$$ \left(\frac{1}{Z} + \frac{1}{Ls}\right) P_a(s) = \left( C s + \frac{1}{R} + \frac{1}{Z} + \frac{1}{Ls} \right) P_p(s) $$
+Aplicando la Transformada de Laplace con condiciones iniciales nulas:
 
-$$ \frac{P_p(s)}{P_a(s)} = \frac{LRs + RZ}{CLRZ s^2 + L(R+Z)s + RZ} $$
+$$\boxed{\frac{P_p(s)}{P_a(s)} = \frac{LRs + RZ}{CLRZ s^2 + L(Z+R)s + RZ}}$$
 
-Forma general:
+[Volver al contenido](#contenido)
 
-$$ G(s) = \frac{R(Ls + Z)}{CLRZ s^2 + L(R+Z)s + RZ} $$
+---
 
-### Funciones de transferencia calculadas
+<a id="analisis"></a>
+## Análisis temporal y de estabilidad
 
-| Caso | C | Función |
-|---|---:|---|
-| Hipotenso | 3.500 | $G_{hipo}(s) = \frac{0.001s+0.01}{3.5\times10^{-5}s^2+0.00101s+0.01}$ |
-| Normotenso | 1.500 | $G_{normo}(s) = \frac{0.001s+0.01}{1.5\times10^{-5}s^2+0.00101s+0.01}$ |
-| Hipertenso | 1.000 | $G_{hiper}(s) = \frac{0.001s+0.01}{1.0\times10^{-5}s^2+0.00101s+0.01}$ |
+### 1. Error en estado estacionario
 
-### Error en estado estacionario
+Para una entrada en escalón unitario $P_a(s) = \frac{1}{s}$, aplicando el Teorema del Valor Final:
 
-$$ e_{ss} = \lim_{s \to 0} s P_a(s) \left[1 - \frac{P_p(s)}{P_a(s)}\right] $$
+$$e(s) = \lim_{s \to 0} s P_a(s) \left( 1 - \frac{P_p(s)}{P_a(s)} \right) = \lim_{s \to 0} s \left( \frac{1}{s} \right) \left( 1 - \frac{LRs + RZ}{CLRZ s^2 + L(Z+R)s + RZ} \right) = 1 - 1 = 0$$
 
-$$ e_{ss} = 0 $$
+$$\boxed{e(t) = 0\text{ V}}$$
 
-### Cálculo de los polos
+El error en estado estacionario para una entrada escalón unitario en lazo abierto es **0 V**.
 
-$$ CLRZ s^2 + L(R+Z)s + RZ = 0 $$
+### 2. Polos y estabilidad por estado fisiológico
 
-$$ \lambda_{1,2} = \frac{-L(R+Z) \pm \sqrt{L^2(R+Z)^2 - 4CLRZ^2}}{2CLRZ} $$
+La ecuación característica del sistema está dada por $CLRZ s^2 + L(Z+R)s + RZ = 0$. Resolviendo mediante la fórmula general:
 
-## 8. Error y estabilidad
+$$\lambda_{1,2} = \frac{-L(Z+R) \pm \sqrt{[L(Z+R)]^2 - 4CLRZ^2}}{2CLRZ}$$
 
-### 8.2 Polos
+Sustituyendo los parámetros de cada condición fisiológica:
 
-| Caso | Polo 1 | Polo 2 | Interpretación |
-|---|---:|---:|---|
-| Hipotenso | -14.429 + 8.805j | -14.429 - 8.805j | Estable y subamortiguado |
-| Normotenso | -12.062 | -55.272 | Estable y sobreamortiguado |
-| Hipertenso | -10.000 | -10.000 | Estable y críticamente amortiguado |
+- **Hipotenso:**
+  $$\lambda_{1,2} = -14.429 \pm 8.805i$$
+  *Resultado:* Polos complejos conjugados con parte real negativa $\rightarrow$ **Sistema estable y subamortiguado**.
 
-## 9. Señal de excitación
+- **Normotenso:**
+  $$\lambda_1 = -12.062, \quad \lambda_2 = -55.272$$
+  *Resultado:* Polos reales negativos y distintos $\rightarrow$ **Sistema estable y sobreamortiguado**.
 
-| Parámetro | Valor |
-|---|---:|
-| Minimum | -0.2 |
-| Maximum | 1 |
-| Seed | 106 |
-| Sample time | 0.1 s |
-| Intervalo | 0 a 15 s |
+- **Hipertenso:**
+  $$\lambda_1 = -10.0, \quad \lambda_2 = -10.0$$
+  *Resultado:* Polos reales negativos e iguales $\rightarrow$ **Sistema estable y críticamente amortiguado**.
 
-## 10. Implementación en MATLAB
+[Volver al contenido](#contenido)
 
-$$ \dot{x} = A x + B u $$
+---
 
-$$ y = C x + D u $$
+<a id="senales"></a>
+## Señales de entrada y condiciones de simulación
 
-$$ G(s) = \frac{R(Ls+Z)}{CLRZ s^2 + L(R+Z)s + RZ} $$
+| Señal | Definición para la simulación | Propósito |
+|---|---|---|
+| Escalón | $u(t) = 1$ para $t \ge 0$ | Evaluar transitorio y verificar error de estado estacionario |
+| Pulso | Amplitud $1$, duración $1\,\mathrm{s}$ | Evaluar la respuesta ante cambios súbitos de presión |
+| Rampa | $u(t) = t/10$ | Evaluar el seguimiento de variaciones continuas |
+| Senoide | $u(t) = \sin(\pi t / 2)$ | Simular la respuesta ante ciclos cardíacos oscilatorios |
 
-## 12. Diseño de control
+[Volver al contenido](#contenido)
 
-$$ e_{hipo}(t) = P_{p,normo}(t) - P_{p,hipo}(t) $$
+---
 
-$$ e_{hiper}(t) = P_{p,normo}(t) - P_{p,hiper}(t) $$
+<a id="matlab"></a>
+## Implementación en MATLAB, Simulink y Simscape
 
-## 13. Sintonización PID
+El modelo se implementa en MATLAB y Simulink evaluando los tres escenarios fisiológicos (Hipotenso, Normotenso e Hipertenso). Se comparan tres metodologías de simulación:
 
-### Controlador hipotenso
+1. **Ecuaciones integro-diferenciales:** Implementadas mediante bloques de integración y suma en Simulink.
+2. **Función de transferencia:** Bloque `Transfer Fcn` cargado con los coeficientes $G(s)$ según los parámetros de cada caso.
+3. **Circuito analógico en Simscape:** Implementación con componentes eléctricos pasivos R, L y C.
 
-$$ K_{P,hipo} = 458.18412862009 $$
-$$ K_{I,hipo} = 1110647.27603615 $$
-$$ K_{D,hipo} = 0.00626708429767374 $$
+[Volver al contenido](#contenido)
 
-### Controlador hipertenso
+---
 
-$$ K_{P,hiper} = 129.978567122813 $$
-$$ K_{I,hiper} = 312762.858715908 $$
-$$ K_{D,hiper} = 0.00174611348908487 $$
+<a id="pid"></a>
+## Control en lazo cerrado y sintonización PID
 
-| Controlador | Kp | Ki | Kd | Observaciones |
-|---|---:|---:|---:|---|
-| Hipotenso | 458.1841 | 1110647.2760 | 0.006267 | Ki alto por C=3.5, polos complejos -14.429±8.805j, respuesta oscilatoria |
-| Hipertenso | 129.9785 | 312762.8587 | 0.001746 | Ki menor por C=1.0, polos críticos -10.000, sistema más rígido |
-Ambos controladores usan estructura PID con filtro: $C_{PID}(s)=K_P + \frac{K_I}{s} + \frac{K_D N s}{s+N}$
+### 1. Retroalimentación negativa
 
-## 14. Análisis en lazo cerrado
+Se aplica un controlador PID con retroalimentación negativa unitaria sobre la función de transferencia para asegurar un seguimiento rápido y eliminar desviaciones ante perturbaciones hemodinámicas.
 
-Comparar $P_{p,normo}(t)$, $P_{p,hipo}(t)$ y $P_{p,hipo,PID}(t)$ para cada caso.
+### 2. Sintonización
 
-## 15. Implementación en Python
+Utilizando la herramienta de sintonización de Simulink (`PID Tuner`), se obtienen las ganancias $k_P$, $k_I$ y $k_D$ para satisfacer el criterio de desempeño:
+- Tiempo de establecimiento $t_s \le 100\,\mathrm{ms}$
+- Sobreimpulso $M_p \le 10\%$
 
-Implementar $G_{hipo}(s)$, $G_{normo}(s)$, $G_{hiper}(s)$ con las mismas condiciones que MATLAB.
+[Volver al contenido](#contenido)
 
-## 16. Verificación cruzada
+---
 
-| Modelo | Hipotenso | Normotenso | Hipertenso |
-|---|:---:|:---:|:---:|
-| Ecuaciones de estado | ✓ | ✓ | ✓ |
-| Función de transferencia | ✓ | ✓ | ✓ |
-| Simscape Electrical | ✓ | ✓ | ✓ |
-| MATLAB (Live Script) | ✓ | ✓ | ✓ |
-| Python | ✓ | ✓ | ✓ |
+<a id="python"></a>
+## Reproducción en Python
 
-✓ = Respuesta coincidente / Verificado
+A través de un script en Python (`.py`), se definen las funciones de transferencia para los tres casos fisiológicos, se calculan los polos del sistema y se simulan las respuestas en lazo abierto y lazo cerrado ante las cuatro señales de entrada.
 
-## 17. Referencias
-1. M. C. Khoo, Physiological Control Systems, 2nd ed.
-2. F. C. Hoppensteadt and C. S. Peskin, Modeling and Simulation in Medicine and the Life Sciences
-3. J. E. Hall, Guyton and Hall Textbook of Medical Physiology, 14th ed.
-4. K. Ogata, Ingeniería de Control Moderna
-5. N. S. Nise, Control Systems Engineering
-6. P. A. Valle, Syllabus MSF
+[Volver al contenido](#contenido)
 
-## Uso académico
-Práctica de Modelado y control del sistema cardiovascular mediante el modelo Windkessel. Fines exclusivamente académicos.
+---
+
+<a id="laboratorio"></a>
+## Controlador analógico y laboratorio
+
+### Materiales y equipo
+- Resistores, inductores y capacitores para el circuito equivalente.
+- Amplificadores operacionales (TL084 / LM358) para la etapa del controlador PID.
+- Generador de funciones, fuente de alimentación simétrica ($\pm 15\,\mathrm{V}$) y osciloscopio.
+
+---
+
+<a id="resultados"></a>
+## Resultados y verificación cruzada
+
+Se comparan las respuestas numéricas y experimentales para cada entrada y cada estado fisiológico.
+
+### Archivos de resultados
+
+| Entrada | MATLAB/Simulink | Python | Laboratorio (Osciloscopio) |
+|---|---|---|---|
+| Escalón | `step_matlab.pdf` | `step_python.pdf` | `stepLC.pdf` |
+| Pulso | `impulse_matlab.pdf` | `impulse_python.pdf` | `impulseLC.pdf` |
+| Rampa | `ramp_matlab.pdf` | `ramp_python.pdf` | `rampLC.pdf` |
+| Sinusoidal | `sinusoidal_matlab.pdf` | `sinusoidal_python.pdf` | `sinLC.pdf` |
+
+[Volver al contenido](#contenido)
+
+---
+
+<a id="flujo"></a>
+## Flujo de trabajo
+
+```mermaid
+flowchart TD
+    A[Sistema Cardiovascular] --> B[Analogia electrica RLC]
+    B --> C[Leyes de Kirchhoff]
+    C --> D[Ecuaciones integro-diferenciales]
+    C --> E[Funcion de transferencia G s ]
+    E --> F[Evaluación de casos: Hipotenso, Normotenso e Hipertenso]
+    F --> G[Analisis de polos, estabilidad y error]
+    D --> H[Simulink: Bloques]
+    E --> I[Simulink: Transfer Fcn]
+    B --> J[Simscape Electrical]
+    E --> K[Diseno de Controlador PID]
+    K --> L[Simulacion en Lazo Cerrado]
+    E --> M[Validacion en Python]
+    L --> N[Montaje Experimental en Laboratorio]
+    N --> O[Resultados y README en GitHub]
+```
+
+[Volver al contenido](#contenido)
+
+---
+
+<a id="actividades"></a>
+## Actividades del estudiante
+
+- [x] Derivar la función de transferencia del sistema cardiovascular $G(s) = P_p(s)/P_a(s)$.
+- [x] Formular las ecuaciones integro-diferenciales.
+- [x] Calcular el error en estado estacionario ante entrada escalón unitario.
+- [x] Calcular los polos y analizar la estabilidad para los tres casos: Hipotenso, Normotenso e Hipertenso.
+- [ ] Implementar la simulación en Simulink y Simscape para los tres casos.
+- [ ] Sintonizar el controlador PID en lazo cerrado.
+- [ ] Reproducir los resultados en Python.
+- [ ] Implementar y medir el circuito en laboratorio.
+- [ ] Subir evidencias y reporte al repositorio de GitHub.
+
+[Volver al contenido](#contenido)
+
+---
+
+<a id="estructura"></a>
+## Estructura del repositorio
+
+```text
+.
+├── README.md                           # Reporte principal y guía de la práctica
+├── CITATION.cff                        # Fichero de citación
+├── Prado_l23210715.mlx                 # Cuaderno de MATLAB
+├── Prado_l23210715.pdf                 # Reporte exportado en PDF
+├── sistema_cardiovascular.slx          # Modelo de Simulink/Simscape
+├── sistema_cardiovascular.py           # Código en Python
+├── controlador_pid.png                 # Parámetros del controlador
+├── step_matlab.pdf
+├── impulse_matlab.pdf
+├── ramp_matlab.pdf
+├── sinusoidal_matlab.pdf
+├── step_python.pdf
+├── impulse_python.pdf
+├── ramp_python.pdf
+├── sinusoidal_python.pdf
+├── stepLC.pdf
+├── impulseLC.pdf
+├── rampLC.pdf
+└── sinLC.pdf
+```
+
+[Volver al contenido](#contenido)
+
+---
+
+<a id="requisitos"></a>
+## Requisitos
+
+### Software
+- **MATLAB R2023a o superior** (Simulink, Simscape Electrical, Control System Toolbox).
+- **Python 3.8+** (con `numpy`, `scipy`, `matplotlib`, `control`).
+- **VS Code** o Spyder.
+
+### Recursos de laboratorio
+- Instrumentación de laboratorio (Osciloscopio, Fuente simétrica, Generador de funciones).
+
+[Volver al contenido](#contenido)
+
+---
+
+<a id="reproducibilidad"></a>
+## Reproducibilidad y entregables
+
+1. Clonar el repositorio: `git clone https://github.com/PradoIT/MSFP2.git`
+2. Abrir el cuaderno `.mlx` en MATLAB y ejecutar todas las secciones.
+3. Ejecutar el archivo `.py` en Python para verificar las gráficas.
+4. Comparar las respuestas transitorias entre los casos Hipotenso, Normotenso e Hipertenso.
+
+[Volver al contenido](#contenido)
+
+---
+
+<a id="referencias"></a>
+## Referencias
+
+[1] P. A. Valle, Syllabus para Modelado de Sistemas Fisiológicos, Tecnológico Nacional de México / Instituto Tecnológico de Tijuana, Tijuana, B.C., México, 2025. Permalink: https://biomath.xyz/course/
+
+[2] M. C. Khoo, Physiological Control Systems Analysis Simulation, and Estimation, 2nd ed. Piscataway, New Jersey, USA: IEEE Press, 2018.
+
+[3] N. S. Nise, Control Systems Engineering, 8th ed. Hoboken, New Jersey, USA: John Wiley & Sons, 2020.
