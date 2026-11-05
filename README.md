@@ -207,40 +207,7 @@ Implementar $G_{hipo}(s)$, $G_{normo}(s)$, $G_{hiper}(s)$ con las mismas condici
 
 ✓ = Respuesta coincidente / Verificado
 
-## 17. Diagrama biológico
-
-## 18. Resultados y discusión
-Incluir matrices A, B, C, D, funciones de transferencia, polos, error, ganancias PID.
-
-## 19. Conclusiones
-
-> **Conclusión de la estudiante:**
-> Kenia Yasdit Contreras Jiménez - 23212188
-
-El modelo Windkessel de cuatro elementos permitió representar el sistema arterial con un circuito eléctrico, donde `Z` es la impedancia, `C` la distensibilidad, `R` la resistencia periférica y `L` la inertancia. Aunque tiene cuatro elementos, solo `C` y `L` guardan energía, por eso el sistema es de segundo orden.
-
-Al cambiar solo `C` se vio el efecto en la dinámica:
-- **Hipotenso (C=3.5):** polos complejos $-14.429 \pm 8.805j$, respuesta subamortiguada y oscilatoria, más elástico.
-- **Normotenso (C=1.5):** polos reales $-12.062$ y $-55.272$, sobreamortiguado, usado como referencia.
-- **Hipertenso (C=1.0):** polos en $-10.000$, críticamente amortiguado, más rígido.
-
-Los tres casos son estables (polos con parte real negativa) y con error cero ante escalón $e_{ss}=0$.
-
-En lazo abierto, con la misma señal aleatoria (min=-0.2, max=1, seed=106, 0-15s), el hipotenso tuvo mayor amplitud y oscilación, y el hipertenso una respuesta más lenta y atenuada.
-
-Con el normotenso como referencia se diseñaron dos controles con error $e(t)=P_{p,normo}(t)-P_{p,caso}(t)$. El PID se sintonizó con Tune:
-- Hipotenso: Kp=458.18, Ki=1110647.27, Kd=0.00626
-- Hipertenso: Kp=129.97, Ki=312762.85, Kd=0.00174
-
-El hipotenso necesitó ganancias más altas por ser más elástico. Ambos controles en lazo cerrado redujeron el error y mejoraron el seguimiento de la referencia.
-
-Los resultados coincidieron entre ecuaciones de estado, función de transferencia, Simscape, MATLAB y Python al usar los mismos parámetros y la misma señal.
-
-Como limitación, el modelo no considera propagación de onda ni regulación autonómica, pero para la práctica permitió entender la relación entre distensibilidad y presión y aplicar control clásico.
-
-**Nota:** Simulación con fines académicos, no es recomendación clínica.
-
-## 24. Referencias
+## 17. Referencias
 1. M. C. Khoo, Physiological Control Systems, 2nd ed.
 2. F. C. Hoppensteadt and C. S. Peskin, Modeling and Simulation in Medicine and the Life Sciences
 3. J. E. Hall, Guyton and Hall Textbook of Medical Physiology, 14th ed.
