@@ -1,4 +1,4 @@
-[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=PradoIT/MSFP2)
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=YasditContreras/MSFP2)
 
 # Práctica 2 — Sistema Cardiovascular
 
